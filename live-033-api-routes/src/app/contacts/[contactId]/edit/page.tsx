@@ -1,13 +1,20 @@
 import { ContactForm } from '@/components/ContactForm';
+import { db } from '@/lib/db';
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-const contact = {
-  email: 'edit@jstack.com.br',
-  name: 'Editing Contact...',
-};
+export default async function CreateContactPage({ params }: { params: { contactId: string } }) {
+  const contact = await db.contact.findUnique({
+    where: {
+      id: params.contactId
+    }
+  })
 
-export default function CreateContactPage() {
+  if (!contact) {
+    return redirect('/')
+  }
+
   return (
     <>
       <header>

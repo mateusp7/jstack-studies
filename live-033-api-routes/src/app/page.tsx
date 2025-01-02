@@ -13,13 +13,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { db } from '@/lib/db';
-import { cn } from '@/lib/utils';
-import { Contact } from '@prisma/client';
-import { useQuery } from '@tanstack/react-query';
 import {
   Edit2Icon,
   PlusCircleIcon,
-  RefreshCcw,
   Trash2Icon,
 } from 'lucide-react';
 import Link from 'next/link';
