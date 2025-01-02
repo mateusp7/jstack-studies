@@ -1,26 +1,46 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { headers } from 'next/headers';
+import { db } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const searchParams = request.nextUrl.searchParams
-  const cookies = request.cookies
-  // console.log({searchParams})
+  const { name, email } = await request.json();
 
-  // console.log(headers().get('Content-Type'));
+  if (!name || !email) {
+    return NextResponse.json(
+      { error: 'Name and Email are required' },
+      { status: 400 }
+    );
+  }
 
-  console.log(cookies.get('cookie-do-mateus')?.value);
+  const emailAlreadyInUse = await db.contact.findUnique({
+    where: {
+      email: email.toLowerCase(),
+    },
+    select: {
+      id: true,
+      email: true,
+    },
+  });
 
-  const response = NextResponse.json(
+  if (emailAlreadyInUse) {
+    return NextResponse.json(
+      { error: 'This email already in use' },
+      { status: 409 }
+    );
+  }
+
+  const contact = await db.contact.create({
+    data: {
+      email,
+      name,
+    },
+  });
+
+  return NextResponse.json(
     {
-      create: true,
+      contact,
     },
     {
       status: 201,
     }
   );
-
-  // response.cookies.set('cookie-do-mateus', 'valor do meu cookie')
-
-  return response
 }

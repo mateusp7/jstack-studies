@@ -1,22 +1,21 @@
-'use client'
+'use client';
 
 import { FormEvent, useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { LoaderIcon } from 'lucide-react';
 
 interface IContactFormProps {
   contact?: {
     name: string;
     email: string;
   };
-  onSubmit?: (formData: {
-    name: string;
-    email: string;
-  }) => void;
+  isLoadingAction?: boolean;
+  onSubmit?: (formData: { name: string; email: string }) => void;
 }
 
-export function ContactForm({ contact, onSubmit }: IContactFormProps) {
+export function ContactForm({ contact, isLoadingAction = false, onSubmit }: IContactFormProps) {
   const [name, setName] = useState(contact?.name ?? '');
   const [email, setEmail] = useState(contact?.email ?? '');
 
@@ -32,7 +31,7 @@ export function ContactForm({ contact, onSubmit }: IContactFormProps) {
         <Input
           value={name}
           name="name"
-          onChange={event => setName(event.target.value)}
+          onChange={(event) => setName(event.target.value)}
         />
       </div>
 
@@ -41,11 +40,12 @@ export function ContactForm({ contact, onSubmit }: IContactFormProps) {
         <Input
           value={email}
           name="email"
-          onChange={event => setEmail(event.target.value)}
+          onChange={(event) => setEmail(event.target.value)}
         />
       </div>
 
-      <Button type="submit">
+      <Button type="submit" disabled={isLoadingAction} className='relative flex items-center gap-1'>
+        {isLoadingAction && <LoaderIcon className='animate-spin size-4 text-white' />}
         {contact ? 'Salvar' : 'Criar'}
       </Button>
     </form>

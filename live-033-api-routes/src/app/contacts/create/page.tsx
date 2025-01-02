@@ -1,21 +1,43 @@
-'use client'
+'use client';
 
 import { ContactForm } from '@/components/ContactForm';
+import { useMutation } from '@tanstack/react-query';
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function CreateContactPage() {
-  async function handleSubmit(data: { name: string; email: string }) {
-    const response = await fetch('/api/contacts?id=232', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  const router = useRouter()
+  const { mutate: onCreateContact, isPending: isLoadingCreateContact } =
+    useMutation({
+      mutationFn: async (data: { name: string; email: string }) => {
+        return await fetch('/api/contacts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
       },
-      body: JSON.stringify(data),
+      onSuccess: async (response) => {
+        if (response.ok && response.status === 201) {
+          toast.success('Contato criado com sucesso')
+          return router.push('/')
+        }
+
+        const error = await response.json();
+
+        if (error.error) {
+          toast.error(error.error)
+        }
+      },
+      onError: () => {
+        toast.error('Ocorreu um erro inesperado ao fazer a solicitação')
+      }
     });
-
-    const body = await response.json();
-
+  async function handleSubmit(data: { name: string; email: string }) {
+    onCreateContact(data);
   }
 
   return (
@@ -33,7 +55,10 @@ export default function CreateContactPage() {
         </h1>
       </header>
 
-      <ContactForm onSubmit={handleSubmit}/>
+      <ContactForm
+        onSubmit={handleSubmit}
+        isLoadingAction={isLoadingCreateContact}
+      />
     </>
   );
 }
