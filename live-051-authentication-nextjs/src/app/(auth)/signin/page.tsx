@@ -50,7 +50,7 @@ export default function SignIn() {
       setIsLoading(true);
       await axios.post("/api/auth/sign-in", data);
       toast.success("Acesso autorizado!");
-      // router.push("/");
+      router.push("/");
     } catch {
       setIsLoading(false);
       toast.error("Credenciais inválidas");
