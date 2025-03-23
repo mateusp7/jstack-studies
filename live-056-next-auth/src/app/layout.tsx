@@ -4,8 +4,6 @@ import { SessionProvider } from "next-auth/react";
 import "./globals.css";
 import { auth } from "@/lib/auth";
 
-
-
 export const metadata: Metadata = {
   title: "Live - 056 - Auth Js",
   description: "Authentication with Auth Js",

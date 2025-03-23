@@ -12,30 +12,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useActionState } from "react";
-import { Loader2Icon } from "lucide-react";
-
-interface ILoginFormProps extends React.ComponentPropsWithoutRef<"div"> {
-  loginAction: (formData: FormData) => Promise<void | { error: string }>;
-}
-
-type ActionState = null | void | { error: string };
+import { loginAction } from '../app/actions/login-action'
 
 export function LoginForm({
   className,
-  loginAction,
   ...props
-}: ILoginFormProps) {
-  const [, dispatchAction, isPending] = useActionState<ActionState>(
-    async (_previousData: any, formData: FormData) => {
-      const response = await loginAction(formData);
-
-      if (response?.error) {
-        alert(response.error);
-      }
-    },
-    null
-  );
+}: React.ComponentPropsWithoutRef<"div">) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -45,7 +27,7 @@ export function LoginForm({
           <CardDescription>Entre com seu e-mail e senha</CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={dispatchAction}>
+          <form action={loginAction}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
@@ -70,11 +52,10 @@ export function LoginForm({
                 <Input name="password" id="password" type="password" required />
               </div>
               <Button
-                disabled={isPending}
                 type="submit"
                 className="w-full flex items-center gap-2"
               >
-                {isPending && <Loader2Icon className="animate-spin" />}
+
                 Entrar
               </Button>
             </div>

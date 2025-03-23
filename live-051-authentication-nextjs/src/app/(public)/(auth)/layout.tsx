@@ -1,4 +1,5 @@
 import { ToggleThemeMode } from "@/components/toggle-theme-mode";
+
 import { PropsWithChildren } from "react";
 
 export default function AuthLayout({ children }: PropsWithChildren) {
